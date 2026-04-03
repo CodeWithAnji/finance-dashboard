@@ -23,8 +23,8 @@ export default function PieChartComponent({ data }) {
         <Pie
           data={data}
           dataKey="value"
-          outerRadius={85}
-          innerRadius={55}
+          outerRadius={70}
+          innerRadius={40}
           stroke="none"
           paddingAngle={3}
         >
