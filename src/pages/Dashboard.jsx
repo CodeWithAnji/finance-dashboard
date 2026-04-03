@@ -77,7 +77,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen p-4 bg-[#0f172a] text-white flex flex-col gap-4 overflow-y-auto mt-[-20px] ">
+    <div className="min-h-screen bg-[#0f172a] text-white flex flex-col  overflow-y-auto mt-[-20px] ">
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-3 gap-4">
         <div className="p-3 rounded-xl bg-[#1e293b]  border border-gray-700 shadow-md">

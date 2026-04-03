@@ -43,9 +43,9 @@ export default function App() {
   );
 
   return (
-    <div className="p-4">
+    <>
       {/* Navbar */}
-      <div className="relative flex items-center justify-between px-4 py-3 bg-[#1e293b] border border-gray-700 shadow-md">
+      <div className="relative flex items-center justify-between bg-[#1e293b] border border-gray-700 shadow-md">
         {/* Left: Hamburger menu on mobile, buttons on desktop */}
         <div className="md:hidden">
           <button
@@ -92,11 +92,11 @@ export default function App() {
       </div>
 
       {/* Page Content */}
-      <div className="mt-4">
+      <div className="">
         {page === "dashboard" && <Dashboard />}
         {page === "transactions" && <Transactions />}
         {page === "insights" && <Insights />}
       </div>
-    </div>
+    </>
   );
 }
