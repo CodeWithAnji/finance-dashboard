@@ -1,1 +1,6 @@
 @import "tailwindcss";
+/* Make calendar icon visible (white) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.8);
+  cursor: pointer;
+}

@@ -1,10 +1,17 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useMemo } from "react";
 import { AppContext } from "../context/AppContext";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 export default function Transactions() {
-  const { transactions, role, search, setSearch, addTransaction } =
-    useContext(AppContext);
+  const {
+    transactions,
+    role,
+    search,
+    setSearch,
+    addTransaction,
+    updateTransaction, // ✅ NEW
+    deleteTransaction, // ✅ NEW
+  } = useContext(AppContext);
 
   const [form, setForm] = useState({
     amount: "",
@@ -15,47 +22,108 @@ export default function Transactions() {
 
   const [editId, setEditId] = useState(null);
 
+  const [filterType, setFilterType] = useState("all");
+  const [sortBy, setSortBy] = useState("date");
+
   const categories = ["Food", "Travel", "Shopping", "Salary", "Bills", "Other"];
 
-  const filtered = transactions.filter((t) =>
-    t.category.toLowerCase().includes(search.toLowerCase()),
-  );
+  // 🔥 FILTER + SEARCH + SORT
+  const filtered = useMemo(() => {
+    let data = [...transactions];
 
-  const handleSubmit = () => {
+    if (search) {
+      data = data.filter(
+        (t) =>
+          t.category.toLowerCase().includes(search.toLowerCase()) ||
+          t.type.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    if (filterType !== "all") {
+      data = data.filter((t) => t.type === filterType);
+    }
+
+    if (sortBy === "amount") {
+      data.sort((a, b) => b.amount - a.amount);
+    } else {
+      data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    return data;
+  }, [transactions, search, filterType, sortBy]);
+
+  // ✅ ADD / UPDATE
+  const handleSubmit = async () => {
     if (!form.amount || !form.category || !form.date) return;
 
-    addTransaction({ ...form, amount: Number(form.amount) });
+    if (editId) {
+      await updateTransaction(editId, {
+        ...form,
+        amount: Number(form.amount),
+      });
+    } else {
+      await addTransaction({
+        ...form,
+        amount: Number(form.amount),
+      });
+    }
 
     setForm({ amount: "", type: "income", category: "", date: "" });
+    setEditId(null);
   };
 
-  const handleDelete = (id) => {
-    // implement delete in context
-    console.log("delete", id);
+  // ✅ DELETE
+  const handleDelete = async (id) => {
+    await deleteTransaction(id);
   };
 
+  // ✅ EDIT
   const handleEdit = (t) => {
-    setForm(t);
+    setForm({
+      amount: t.amount,
+      type: t.type,
+      category: t.category,
+      date: t.date,
+    });
     setEditId(t.id);
   };
 
   return (
     <div className="min-h-screen p-4 bg-[#0f172a] text-white">
-      {/* HEADER */}
       <h2 className="text-xl font-bold text-gray-300 mb-4">Transactions</h2>
 
-      {/* SEARCH */}
-      <input
-        placeholder="Search category..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full md:w-1/3 p-2 mb-4 rounded-lg bg-[#1e293b] border border-gray-700 text-sm outline-none"
-      />
+      {/* SEARCH + FILTER */}
+      <div className="flex flex-col md:flex-row gap-3 mb-4">
+        <input
+          placeholder="Search category or type..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-sm"
+        />
 
-      {/* ADMIN FORM */}
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-sm"
+        >
+          <option value="all">All</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-sm"
+        >
+          <option value="date">Sort by Date</option>
+          <option value="amount">Sort by Amount</option>
+        </select>
+      </div>
+
+      {/* FORM */}
       {role === "admin" && (
         <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-4 mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
-          {/* Amount */}
           <input
             placeholder="Amount"
             value={form.amount}
@@ -63,7 +131,6 @@ export default function Transactions() {
             className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-sm"
           />
 
-          {/* Category Dropdown */}
           <select
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
@@ -71,13 +138,10 @@ export default function Transactions() {
           >
             <option value="">Select Category</option>
             {categories.map((c, i) => (
-              <option key={i} value={c}>
-                {c}
-              </option>
+              <option key={i}>{c}</option>
             ))}
           </select>
 
-          {/* Type */}
           <select
             value={form.type}
             onChange={(e) => setForm({ ...form, type: e.target.value })}
@@ -87,7 +151,6 @@ export default function Transactions() {
             <option value="expense">Expenditure</option>
           </select>
 
-          {/* Date */}
           <input
             type="date"
             value={form.date}
@@ -95,17 +158,16 @@ export default function Transactions() {
             className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-sm"
           />
 
-          {/* Button */}
           <button
             onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 transition text-white rounded-lg text-sm px-3 py-2 cursor-pointer"
+            className="bg-purple-500 hover:bg-purple-600 rounded-lg text-sm px-3 py-2"
           >
             {editId ? "Update" : "Add"}
           </button>
         </div>
       )}
 
-      {/* TABLE (Desktop) */}
+      {/* DESKTOP TABLE */}
       <div className="hidden md:block bg-[#1e293b] border border-gray-700 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-[#0f172a] text-gray-400">
@@ -120,16 +182,11 @@ export default function Transactions() {
 
           <tbody>
             {filtered.map((t) => (
-              <tr
-                key={t.id}
-                className="border-t border-gray-700 hover:bg-[#0f172a]"
-              >
+              <tr key={t.id} className="border-t border-gray-700">
                 <td className="p-3">{t.date}</td>
                 <td className="p-3">{t.category}</td>
                 <td
-                  className={`p-3 font-semibold ${
-                    t.type === "income" ? "text-green-400" : "text-red-400"
-                  }`}
+                  className={`p-3 font-semibold ${t.type === "income" ? "text-green-400" : "text-red-400"}`}
                 >
                   ₹{t.amount}
                 </td>
@@ -137,12 +194,12 @@ export default function Transactions() {
 
                 <td className="p-3 flex gap-3">
                   <FaEdit
-                    className="cursor-pointer text-blue-400"
                     onClick={() => handleEdit(t)}
+                    className="text-blue-400 cursor-pointer"
                   />
                   <FaTrash
-                    className="cursor-pointer text-red-400"
                     onClick={() => handleDelete(t.id)}
+                    className="text-red-400 cursor-pointer"
                   />
                 </td>
               </tr>
@@ -151,7 +208,7 @@ export default function Transactions() {
         </table>
       </div>
 
-      {/* MOBILE VIEW */}
+      {/* MOBILE */}
       <div className="md:hidden flex flex-col gap-3">
         {filtered.map((t) => (
           <div
@@ -159,23 +216,21 @@ export default function Transactions() {
             className="bg-[#1e293b] border border-gray-700 rounded-xl p-3"
           >
             <p className="text-xs text-gray-400">{t.date}</p>
-            <h3 className="font-semibold">{t.category}</h3>
+            <h3>{t.category}</h3>
 
             <p
-              className={`font-bold ${
-                t.type === "income" ? "text-green-400" : "text-red-400"
-              }`}
+              className={`font-bold ${t.type === "income" ? "text-green-400" : "text-red-400"}`}
             >
               ₹{t.amount}
             </p>
 
-            <p className="text-xs capitalize text-gray-400">{t.type}</p>
+            <p className="text-xs text-gray-400">{t.type}</p>
 
             <div className="flex gap-4 mt-2">
-              <FaEdit className="text-blue-400" onClick={() => handleEdit(t)} />
+              <FaEdit onClick={() => handleEdit(t)} className="text-blue-400" />
               <FaTrash
-                className="text-red-400"
                 onClick={() => handleDelete(t.id)}
+                className="text-red-400"
               />
             </div>
           </div>

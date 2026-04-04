@@ -10,9 +10,7 @@ export default function Dashboard() {
   const { transactions } = useContext(AppContext);
   const { income, expense, balance } = getSummary(transactions);
 
-  // ==============================
-  // 📊 TIME-BASED 1: Balance Trend
-  // ==============================
+  // Balance Trend Data
   const lineData = [...transactions]
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .map((t) => ({
@@ -20,121 +18,99 @@ export default function Dashboard() {
       amount: t.type === "income" ? t.amount : -t.amount,
     }));
 
-  // ==============================
-  // 📊 TIME-BASED 2: Monthly Comparison
-  // ==============================
+  // Monthly Comparison Data
   const monthlyMap = {};
-
   transactions.forEach((t) => {
     const month = new Date(t.date).toLocaleString("default", {
       month: "short",
     });
-
-    if (!monthlyMap[month]) {
+    if (!monthlyMap[month])
       monthlyMap[month] = { month, income: 0, expense: 0 };
-    }
-
-    if (t.type === "income") {
-      monthlyMap[month].income += t.amount;
-    } else {
-      monthlyMap[month].expense += t.amount;
-    }
+    t.type === "income"
+      ? (monthlyMap[month].income += t.amount)
+      : (monthlyMap[month].expense += t.amount);
   });
-
   const monthlyData = Object.values(monthlyMap);
 
-  // ==============================
-  // 🥧 CATEGORICAL 1: Expense Breakdown
-  // ==============================
+  // Expense Breakdown Data
   const categoryMap = {};
-
   transactions.forEach((t) => {
-    const type = t.type?.toString().trim().toLowerCase();
-
-    if (type === "expense") {
-      const category = t.category?.toString().trim() || "Other";
-
+    if (t.type?.toLowerCase() === "expense") {
+      const category = t.category?.trim() || "Other";
       categoryMap[category] =
         (categoryMap[category] || 0) + Number(t.amount || 0);
     }
   });
+  const pieData = Object.keys(categoryMap).length
+    ? Object.keys(categoryMap).map((k) => ({ name: k, value: categoryMap[k] }))
+    : [{ name: "No Data", value: 1 }];
 
-  let pieData = Object.keys(categoryMap).map((key) => ({
-    name: key,
-    value: categoryMap[key],
-  }));
-
-  if (pieData.length === 0) {
-    pieData = [{ name: "No Data", value: 1 }];
-  }
-
-  // ==============================
-  // 🥧 CATEGORICAL 2: Income vs Expense
-  // ==============================
+  // Income vs Expense Data
   const ratioData = [
     { name: "Income", value: income },
     { name: "Expense", value: expense },
   ];
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white flex flex-col  overflow-y-auto mt-[-20px] ">
+    <div className="flex flex-col gap-4 p-4 mt-[-15px]">
       {/* SUMMARY CARDS */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="p-3 rounded-xl bg-[#1e293b]  border border-gray-700 shadow-md">
-          <p className="text-xs text-white font-semibold">Income</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md">
+          <p className="text-xs text-gray-300 font-semibold">Income</p>
           <h2 className="text-lg font-bold text-green-400">₹{income}</h2>
         </div>
-
-        <div className="p-3 rounded-xl  bg-[#1e293b] border border-gray-700 shadow-sm">
-          <p className="text-xs text-white font-semibold">Expense</p>
+        <div className="p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md">
+          <p className="text-xs text-gray-300 font-semibold">Expense</p>
           <h2 className="text-lg font-bold text-red-400">₹{expense}</h2>
         </div>
-
-        <div className="p-3 rounded-xl   bg-[#1e293b] shadow-sm border border-gray-700">
-          <p className="text-xs text-white font-semibold">Balance</p>
+        <div className="p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md">
+          <p className="text-xs text-gray-300 font-semibold">Balance</p>
           <h2 className="text-lg font-bold text-blue-400">₹{balance}</h2>
         </div>
       </div>
 
-      {/* CHART GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* LINE */}
-        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-3 shadow-sm flex flex-col">
-          <h3 className="text-sm font-semibold text-gray-300 mb-1">
+      {/* DASHBOARD SPLIT */}
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* LEFT: Balance Trend */}
+        <div className="flex-1 p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md flex flex-col max-h-[400px] md:h-auto">
+          <h3 className="text-sm font-semibold text-gray-300 mb-2">
             Balance Trend
           </h3>
-          <div className="flex-1">
+          <div className="flex-1 min-h-[180px]">
             <LineChartComponent data={lineData} />
           </div>
         </div>
 
-        {/* BAR */}
-        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-3 shadow-sm flex flex-col">
-          <h3 className="text-sm font-semibold text-gray-300 mb-1">
-            Monthly Comparison
-          </h3>
-          <div className="flex-1">
-            <BarChartComponent data={monthlyData} />
+        {/* RIGHT: Monthly + Pie Charts */}
+        <div className="flex-1 flex flex-col gap-4">
+          {/* Monthly Comparison */}
+          <div className="flex-1 p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md flex flex-col max-h-[200px]">
+            <h3 className="text-sm font-semibold text-gray-300 mb-2">
+              Monthly Comparison
+            </h3>
+            <div className="flex-1 min-h-[150px]">
+              <BarChartComponent data={monthlyData} />
+            </div>
           </div>
-        </div>
 
-        {/* PIE 1 */}
-        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-3 shadow-sm flex flex-col">
-          <h3 className="text-sm font-semibold text-gray-300 mb-1">
-            Expense Breakdown
-          </h3>
-          <div className="flex-1">
-            <PieChartComponent data={pieData} />
-          </div>
-        </div>
-
-        {/* PIE 2 */}
-        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-3 shadow-sm flex flex-col">
-          <h3 className="text-sm font-semibold text-gray-300 mb-1">
-            Income vs Expense
-          </h3>
-          <div className="flex-1">
-            <PieChartComponent data={ratioData} />
+          {/* Two Pie Charts */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md flex flex-col max-h-[180px]">
+              <h3 className="text-sm font-semibold text-gray-300 mb-2">
+                Expense Breakdown
+              </h3>
+              <div className="flex-1 min-h-[150px]">
+                <PieChartComponent data={pieData} />
+              </div>
+            </div>
+            <div className="flex-1 p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md flex flex-col max-h-[180px]">
+              <h3 className="text-sm font-semibold text-gray-300 mb-2">
+                Income vs Expense
+              </h3>
+              <div className="flex-1 min-h-[150px]">
+                <PieChartComponent data={ratioData} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
