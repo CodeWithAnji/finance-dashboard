@@ -81,12 +81,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* RIGHT: Monthly + Pie Charts */}
         <div className="flex-1 flex flex-col gap-4">
-          {/* Monthly Comparison */}
           <div className="flex-1 p-4 rounded-xl bg-[#1e293b] border border-gray-700 shadow-md flex flex-col max-h-[200px]">
             <h3 className="text-sm font-semibold text-gray-300 mb-2">
-              Monthly Comparison
+              Daily Expense Trend (Last 7 days)
             </h3>
             <div className="flex-1 min-h-[150px]">
               <DailyExpenseChart transactions={transactions} />

@@ -8,8 +8,28 @@ import {
 } from "recharts";
 
 export default function LineChartComponent({ data }) {
-  const maxValue = Math.max(...data.map((d) => d.amount));
-  const minValue = Math.min(...data.map((d) => d.amount)); // find low balance
+  // Handle empty or invalid data
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center w-full h-[220px] md:h-full text-gray-400">
+        No data available
+      </div>
+    );
+  }
+
+  // Filter out invalid amounts
+  const validData = data.filter((d) => typeof d.amount === "number");
+
+  if (validData.length === 0) {
+    return (
+      <div className="flex items-center justify-center w-full h-[220px] md:h-full text-gray-400">
+        No valid numeric data
+      </div>
+    );
+  }
+
+  const maxValue = Math.max(...validData.map((d) => d.amount));
+  const minValue = Math.min(...validData.map((d) => d.amount));
 
   return (
     <div className="relative w-full h-[220px] md:h-full">
@@ -30,7 +50,7 @@ export default function LineChartComponent({ data }) {
       </div>
 
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <LineChart data={validData}>
           <XAxis dataKey="date" tick={{ fill: "#9ca3af", fontSize: 10 }} />
           <YAxis tick={{ fill: "#9ca3af", fontSize: 10 }} />
           <Tooltip />

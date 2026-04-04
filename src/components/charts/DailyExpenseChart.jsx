@@ -13,7 +13,7 @@ export default function DailyExpenseChart({ transactions }) {
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    // ✅ normalize date to YYYY-MM-DD
+    // Normalize date to YYYY-MM-DD
     const formatDate = (date) => {
       const d = new Date(date);
       const y = d.getFullYear();
@@ -22,18 +22,21 @@ export default function DailyExpenseChart({ transactions }) {
       return `${y}-${m}-${day}`;
     };
 
-    // ✅ get latest date safely
-    const latestDate = new Date(
-      Math.max(...transactions.map((t) => new Date(t.date).getTime())),
-    );
+    // Get latest transaction date safely
+    const validDates = transactions
+      .map((t) => new Date(t.date).getTime())
+      .filter((time) => !isNaN(time));
+
+    if (validDates.length === 0) return [];
+
+    const latestDate = new Date(Math.max(...validDates));
 
     const result = [];
 
-    // ✅ generate last 7 days
+    // Generate last 7 days
     for (let i = 6; i >= 0; i--) {
       const d = new Date(latestDate);
       d.setDate(latestDate.getDate() - i);
-
       result.push({
         date: formatDate(d),
         day: days[d.getDay()],
@@ -41,28 +44,35 @@ export default function DailyExpenseChart({ transactions }) {
       });
     }
 
-    // ✅ FIX: normalize transaction date before comparing
+    // Accumulate expenses
     transactions.forEach((t) => {
       const normalizedDate = formatDate(t.date);
-
-      // ✅ FIX: handle both "expense" & "expenditure"
-      if (t.type === "expense" || t.type === "expenditure") {
+      const amount = Number(t.amount);
+      if (
+        !isNaN(amount) &&
+        (t.type === "expense" || t.type === "expenditure")
+      ) {
         const found = result.find((d) => d.date === normalizedDate);
-
-        if (found) {
-          found.expense += Number(t.amount) || 0;
-        }
+        if (found) found.expense += amount;
       }
     });
 
-    console.log("FINAL CHART DATA:", result);
     return result;
   };
 
   const data = getLast7DaysExpense();
 
+  // Edge case: no valid data to display
+  if (!data || data.length === 0 || data.every((d) => d.expense === 0)) {
+    return (
+      <div className="flex items-center justify-center w-full h-[150px] md:h-full text-gray-400">
+        No expense data available
+      </div>
+    );
+  }
+
   return (
-    <div className="relative w-full h-[180px] md:h-full">
+    <div className="relative w-full h-[160px] md:h-full">
       {/* LEGEND */}
       <div className="absolute top-0 right-0 flex flex-col gap-1 text-xs text-gray-400 z-10">
         <div className="flex items-center gap-1">

@@ -28,12 +28,33 @@ export default function PieChartComponent({ data }) {
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
+  // Handle edge cases
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center w-full h-[200px] md:h-full text-gray-400">
+        No data available
+      </div>
+    );
+  }
+
+  const validData = data.filter(
+    (d) => typeof d.value === "number" && d.value > 0,
+  );
+
+  if (validData.length === 0) {
+    return (
+      <div className="flex items-center justify-center w-full h-[200px] md:h-full text-gray-400">
+        No valid data to display
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-[200px] md:h-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={data}
+            data={validData}
             dataKey="value"
             outerRadius={isMobile ? "55%" : "60%"}
             innerRadius="0%"
@@ -43,7 +64,7 @@ export default function PieChartComponent({ data }) {
             stroke="none"
             label={({ percent, cx, cy, midAngle, outerRadius }) => {
               const RADIAN = Math.PI / 180;
-              const radius = outerRadius * 1.3; // 👈 near circumference (slightly inside)
+              const radius = outerRadius * 1.3;
               const x = cx + radius * Math.cos(-midAngle * RADIAN);
               const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -62,7 +83,7 @@ export default function PieChartComponent({ data }) {
             }}
             labelLine={false}
           >
-            {data.map((entry, index) => (
+            {validData.map((entry, index) => (
               <Cell
                 key={index}
                 fill={COLORS[index % COLORS.length]}

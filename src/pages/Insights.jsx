@@ -35,13 +35,20 @@ export default function Insights() {
     const prevYear = prevDate.getFullYear();
 
     transactions.forEach((t) => {
-      const amount = Number(t.amount) || 0;
+      // ✅ Edge case: missing or invalid fields
+      if (!t.amount || !t.date || !t.type) return;
+      const amount = Number(t.amount);
+      if (isNaN(amount)) return;
+
       const date = new Date(t.date);
+      if (isNaN(date.getTime())) return;
 
       if (t.type === "income") totalIncome += amount;
 
       if (t.type === "expense" || t.type === "expenditure") {
-        categoryMap[t.category] = (categoryMap[t.category] || 0) + amount;
+        if (t.category) {
+          categoryMap[t.category] = (categoryMap[t.category] || 0) + amount;
+        }
 
         if (
           date.getMonth() === currentMonth &&
@@ -68,7 +75,9 @@ export default function Insights() {
 
     const change =
       prevMonthExpense === 0
-        ? 100
+        ? currentMonthExpense > 0
+          ? 100
+          : 0
         : ((currentMonthExpense - prevMonthExpense) / prevMonthExpense) * 100;
 
     const avgExpense = currentMonthExpense / (new Date().getDate() || 1);
@@ -86,9 +95,9 @@ export default function Insights() {
         : 0;
 
     let observation = "";
-    if (change > 20) observation = "Spending increased significantly ";
+    if (change > 20) observation = "Spending increased significantly";
     else if (change < -20) observation = "Great control over expenses";
-    else observation = "Spending is stable ";
+    else observation = "Spending is stable";
 
     return {
       topCategory,
@@ -111,7 +120,6 @@ export default function Insights() {
 
       {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 flex-1">
-        {/* Card */}
         {[
           {
             label: "Top Spending Category",
@@ -169,7 +177,6 @@ export default function Insights() {
             className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-3 flex flex-col justify-center"
           >
             <p className="text-[10px] sm:text-xs text-gray-400">{item.label}</p>
-
             <h3
               className={`${
                 item.small ? "text-xs sm:text-sm" : "text-base sm:text-lg"
@@ -177,7 +184,6 @@ export default function Insights() {
             >
               {item.value}
             </h3>
-
             {item.extra}
           </div>
         ))}
