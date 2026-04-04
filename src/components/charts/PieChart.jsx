@@ -81,6 +81,7 @@ export default function PieChartComponent({ data }) {
               fontSize: "11px",
               lineHeight: "16px",
               paddingLeft: "8px",
+              paddingBottom: "50px",
             }}
           />
         </PieChart>

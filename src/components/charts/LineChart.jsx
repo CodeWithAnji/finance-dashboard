@@ -9,6 +9,7 @@ import {
 
 export default function LineChartComponent({ data }) {
   const maxValue = Math.max(...data.map((d) => d.amount));
+  const minValue = Math.min(...data.map((d) => d.amount)); // find low balance
 
   return (
     <div className="relative w-full h-[220px] md:h-full">
@@ -20,7 +21,11 @@ export default function LineChartComponent({ data }) {
         </div>
         <div className="flex items-center gap-1">
           <span className="w-3 h-3 rounded-full bg-green-300 border border-green-500"></span>
-          <span>Peak Balance</span>
+          <span>High Balance</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded-full bg-red-300 border border-red-500"></span>
+          <span>Low Balance</span>
         </div>
       </div>
 
@@ -37,18 +42,32 @@ export default function LineChartComponent({ data }) {
             strokeWidth={3}
             isAnimationActive
             animationDuration={1200}
-            dot={({ cx, cy, value }) =>
-              value === maxValue ? (
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={6}
-                  fill="#86efac"
-                  stroke="green"
-                  strokeWidth={2}
-                />
-              ) : null
-            }
+            dot={({ cx, cy, value }) => {
+              if (value === maxValue) {
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={6}
+                    fill="#86efac"
+                    stroke="green"
+                    strokeWidth={2}
+                  />
+                );
+              } else if (value === minValue) {
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={6}
+                    fill="#fecaca"
+                    stroke="red"
+                    strokeWidth={2}
+                  />
+                );
+              }
+              return null;
+            }}
           />
         </LineChart>
       </ResponsiveContainer>

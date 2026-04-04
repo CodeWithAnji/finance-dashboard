@@ -24,7 +24,14 @@ export default function BarChartComponent({ data }) {
 
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barCategoryGap="30%">
-          <XAxis dataKey="month" tick={{ fill: "#9ca3af", fontSize: 10 }} />
+          <XAxis
+            dataKey="month"
+            tick={{ fill: "#9ca3af", fontSize: 10 }}
+            angle={-35} // Rotate labels
+            textAnchor="end" // Align rotated labels
+            interval={0} // Show all labels
+            padding="10px"
+          />
           <YAxis tick={{ fill: "#9ca3af", fontSize: 10 }} />
           <Tooltip />
           <Bar dataKey="income" fill="#22c55e" barSize={16} />

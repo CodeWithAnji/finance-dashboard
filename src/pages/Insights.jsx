@@ -106,7 +106,7 @@ export default function Insights() {
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-950 via-gray-900 to-black p-3 md:p-4 flex flex-col">
       {/* Header */}
       <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3">
-        Insights Dashboard
+        Insights
       </h2>
 
       {/* Grid */}
