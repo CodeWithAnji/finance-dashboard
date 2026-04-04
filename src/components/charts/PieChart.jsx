@@ -39,8 +39,28 @@ export default function PieChartComponent({ data }) {
             innerRadius="0%"
             paddingAngle={0}
             cx="50%"
-            cy={isMobile ? "30%" : "40%"} // 🔥 mobile moves up
+            cy={isMobile ? "30%" : "40%"}
             stroke="none"
+            label={({ percent, cx, cy, midAngle, outerRadius }) => {
+              const RADIAN = Math.PI / 180;
+              const radius = outerRadius * 1.3; // 👈 near circumference (slightly inside)
+              const x = cx + radius * Math.cos(-midAngle * RADIAN);
+              const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  fill="gray"
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize="13px"
+                >
+                  {(percent * 100).toFixed(0)}%
+                </text>
+              );
+            }}
+            labelLine={false}
           >
             {data.map((entry, index) => (
               <Cell
@@ -50,7 +70,6 @@ export default function PieChartComponent({ data }) {
               />
             ))}
           </Pie>
-
           <Tooltip />
 
           <Legend

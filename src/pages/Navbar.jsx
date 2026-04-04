@@ -39,9 +39,17 @@ export default function Navbar({ page, setPage }) {
 
       {/* Center: Title */}
       <h1
-        className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                     text-sm sm:text-base md:text-xl font-bold text-gray-300 tracking-wide text-center
-                     truncate max-w-[60%]"
+        className="
+    text-sm sm:text-base md:text-xl font-bold text-gray-300 tracking-wide truncate
+    max-w-[60%]
+
+    /* Mobile: normal flow (left aligned) */
+    static text-left ml-2
+
+    /* Desktop: center it */
+    md:absolute md:left-1/2 md:top-1/2 
+    md:-translate-x-1/2 md:-translate-y-1/2 md:text-center
+  "
       >
         FINANCE DASHBOARD
       </h1>

@@ -138,7 +138,9 @@ export default function Transactions() {
           >
             <option value="">Select Category</option>
             {categories.map((c, i) => (
-              <option key={i}>{c}</option>
+              <option key={i} value={c}>
+                {c}
+              </option>
             ))}
           </select>
 
@@ -160,7 +162,7 @@ export default function Transactions() {
 
           <button
             onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 rounded-lg text-sm px-3 py-2"
+            className="bg-purple-500 hover:bg-purple-600 rounded-lg text-sm px-3 py-2 cursor-pointer"
           >
             {editId ? "Update" : "Add"}
           </button>

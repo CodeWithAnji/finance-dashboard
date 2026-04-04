@@ -12,20 +12,63 @@ export const AppProvider = ({ children }) => {
     fetchTransactions();
   }, []);
 
+  // ✅ FETCH
   const fetchTransactions = async () => {
-    const res = await fetch(`${BASE_URL}/transactions`);
-    const data = await res.json();
-    setTransactions(data);
+    try {
+      const res = await fetch(`${BASE_URL}/transactions`);
+      if (!res.ok) throw new Error("Failed to fetch");
+
+      const data = await res.json();
+      setTransactions(data);
+    } catch (err) {
+      console.error("Fetch error:", err.message);
+    }
   };
 
+  // ✅ ADD
   const addTransaction = async (tx) => {
-    const res = await fetch(`${BASE_URL}/transactions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tx),
-    });
-    const data = await res.json();
-    setTransactions((prev) => [...prev, data]);
+    try {
+      const res = await fetch(`${BASE_URL}/transactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(tx),
+      });
+
+      const data = await res.json();
+      setTransactions((prev) => [...prev, data]);
+    } catch (err) {
+      console.error("Add error:", err.message);
+    }
+  };
+
+  // ✅ UPDATE (🔥 FIX)
+  const updateTransaction = async (id, updatedTx) => {
+    try {
+      const res = await fetch(`${BASE_URL}/transactions/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTx),
+      });
+
+      const data = await res.json();
+
+      setTransactions((prev) => prev.map((t) => (t.id === id ? data : t)));
+    } catch (err) {
+      console.error("Update error:", err.message);
+    }
+  };
+
+  // ✅ DELETE (🔥 FIX)
+  const deleteTransaction = async (id) => {
+    try {
+      await fetch(`${BASE_URL}/transactions/${id}`, {
+        method: "DELETE",
+      });
+
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error("Delete error:", err.message);
+    }
   };
 
   return (
@@ -37,6 +80,8 @@ export const AppProvider = ({ children }) => {
         search,
         setSearch,
         addTransaction,
+        updateTransaction, // ✅ ADDED
+        deleteTransaction, // ✅ ADDED
       }}
     >
       {children}

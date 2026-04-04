@@ -3,7 +3,7 @@ import { AppContext } from "../context/AppContext";
 import { getSummary } from "../utils/calculations";
 
 import LineChartComponent from "../components/charts/LineChart";
-import BarChartComponent from "../components/charts/BarChart";
+import DailyExpenseChart from "../components/charts/DailyExpenseChart";
 import PieChartComponent from "../components/charts/PieChart";
 
 export default function Dashboard() {
@@ -89,7 +89,7 @@ export default function Dashboard() {
               Monthly Comparison
             </h3>
             <div className="flex-1 min-h-[150px]">
-              <BarChartComponent data={monthlyData} />
+              <DailyExpenseChart transactions={transactions} />
             </div>
           </div>
 
