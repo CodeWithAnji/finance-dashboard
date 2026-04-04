@@ -9,8 +9,8 @@ export default function Transactions() {
     search,
     setSearch,
     addTransaction,
-    updateTransaction, // ✅ NEW
-    deleteTransaction, // ✅ NEW
+    updateTransaction,
+    deleteTransaction,
   } = useContext(AppContext);
 
   const [form, setForm] = useState({
@@ -21,7 +21,6 @@ export default function Transactions() {
   });
 
   const [editId, setEditId] = useState(null);
-
   const [filterType, setFilterType] = useState("all");
   const [sortBy, setSortBy] = useState("date");
 
@@ -52,7 +51,6 @@ export default function Transactions() {
     return data;
   }, [transactions, search, filterType, sortBy]);
 
-  // ✅ ADD / UPDATE
   const handleSubmit = async () => {
     if (!form.amount || !form.category || !form.date) return;
 
@@ -72,12 +70,10 @@ export default function Transactions() {
     setEditId(null);
   };
 
-  // ✅ DELETE
   const handleDelete = async (id) => {
     await deleteTransaction(id);
   };
 
-  // ✅ EDIT
   const handleEdit = (t) => {
     setForm({
       amount: t.amount,
@@ -89,22 +85,25 @@ export default function Transactions() {
   };
 
   return (
-    <div className="min-h-screen p-4 bg-[#0f172a] text-white">
-      <h2 className="text-xl font-bold text-gray-300 mb-4">Transactions</h2>
+    <div className="min-h-screen bg-[#0f172a] text-white p-3 sm:p-4 lg:p-6">
+      {/* Header */}
+      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-300 mb-4">
+        Transactions
+      </h2>
 
       {/* SEARCH + FILTER */}
-      <div className="flex flex-col md:flex-row gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 mb-4">
         <input
           placeholder="Search category or type..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-sm"
+          className="flex-1 min-w-[150px] p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-xs sm:text-sm"
         />
 
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-sm"
+          className="p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-xs sm:text-sm"
         >
           <option value="all">All</option>
           <option value="income">Income</option>
@@ -114,7 +113,7 @@ export default function Transactions() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-sm"
+          className="p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-xs sm:text-sm"
         >
           <option value="date">Sort by Date</option>
           <option value="amount">Sort by Amount</option>
@@ -123,20 +122,20 @@ export default function Transactions() {
 
       {/* FORM */}
       {role === "admin" && (
-        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-4 mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-3 sm:p-4 mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
           <input
             placeholder="Amount"
             value={form.amount}
             onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-sm"
+            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
           />
 
           <select
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-sm"
+            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
           >
-            <option value="">Select Category</option>
+            <option value="">Category</option>
             {categories.map((c, i) => (
               <option key={i} value={c}>
                 {c}
@@ -147,31 +146,31 @@ export default function Transactions() {
           <select
             value={form.type}
             onChange={(e) => setForm({ ...form, type: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-sm"
+            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
           >
             <option value="income">Income</option>
-            <option value="expense">Expenditure</option>
+            <option value="expense">Expense</option>
           </select>
 
           <input
             type="date"
             value={form.date}
             onChange={(e) => setForm({ ...form, date: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-sm"
+            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
           />
 
           <button
             onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 rounded-lg text-sm px-3 py-2 cursor-pointer"
+            className="bg-purple-500 hover:bg-purple-600 rounded-lg text-xs sm:text-sm px-3 py-2"
           >
             {editId ? "Update" : "Add"}
           </button>
         </div>
       )}
 
-      {/* DESKTOP TABLE */}
-      <div className="hidden md:block bg-[#1e293b] border border-gray-700 rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      {/* TABLE (Tablet + Desktop) */}
+      <div className="hidden md:block bg-[#1e293b] border border-gray-700 rounded-xl overflow-x-auto">
+        <table className="w-full text-xs sm:text-sm min-w-[600px]">
           <thead className="bg-[#0f172a] text-gray-400">
             <tr>
               <th className="p-3 text-left">Date</th>
@@ -188,12 +187,13 @@ export default function Transactions() {
                 <td className="p-3">{t.date}</td>
                 <td className="p-3">{t.category}</td>
                 <td
-                  className={`p-3 font-semibold ${t.type === "income" ? "text-green-400" : "text-red-400"}`}
+                  className={`p-3 font-semibold ${
+                    t.type === "income" ? "text-green-400" : "text-red-400"
+                  }`}
                 >
                   ₹{t.amount}
                 </td>
                 <td className="p-3 capitalize">{t.type}</td>
-
                 <td className="p-3 flex gap-3">
                   <FaEdit
                     onClick={() => handleEdit(t)}
@@ -210,25 +210,29 @@ export default function Transactions() {
         </table>
       </div>
 
-      {/* MOBILE */}
-      <div className="md:hidden flex flex-col gap-3">
+      {/* MOBILE CARDS */}
+      <div className="md:hidden flex flex-col gap-2">
         {filtered.map((t) => (
           <div
             key={t.id}
-            className="bg-[#1e293b] border border-gray-700 rounded-xl p-3"
+            className="bg-[#1e293b] border border-gray-700 rounded-lg p-2"
           >
-            <p className="text-xs text-gray-400">{t.date}</p>
-            <h3>{t.category}</h3>
+            <div className="flex justify-between items-center text-xs text-gray-400">
+              <span>{t.date}</span>
+              <span className="capitalize">{t.type}</span>
+            </div>
+
+            <h3 className="text-sm font-medium mt-1">{t.category}</h3>
 
             <p
-              className={`font-bold ${t.type === "income" ? "text-green-400" : "text-red-400"}`}
+              className={`font-bold ${
+                t.type === "income" ? "text-green-400" : "text-red-400"
+              }`}
             >
               ₹{t.amount}
             </p>
 
-            <p className="text-xs text-gray-400">{t.type}</p>
-
-            <div className="flex gap-4 mt-2">
+            <div className="flex gap-4 mt-1">
               <FaEdit onClick={() => handleEdit(t)} className="text-blue-400" />
               <FaTrash
                 onClick={() => handleDelete(t.id)}
