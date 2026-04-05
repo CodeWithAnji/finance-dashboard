@@ -79,11 +79,11 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 - Export: Export filtered transactions as CSV
 - View Insights: Check dashboard insights for trends and spending patterns
 ### Additional Features
-- Dark Mode: TailwindCSS dark styling
-- Mock API Integration: Simulates backend CRUD operations
-- Animations & Transitions: Button hover effects and toast notifications
-- Export Functionality: CSV export of filtered transactions
-- Advanced Filtering & Grouping: Filters by type, category, amount, and date; sorting by date and amount
+- **Dark Mode:** TailwindCSS dark styling
+- **Mock API Integration:** Simulates backend CRUD operations
+- **Animations & Transitions:** Button hover effects and toast notifications
+- **Export Functionality:** CSV export of filtered transactions
+- **Advanced Filtering & Grouping:** Filters by type, category, amount, and date; sorting by date and amount
 - Handles empty transactions gracefully
 - Prevents invalid or missing data entries
 - Safe calculations for division and percentages
