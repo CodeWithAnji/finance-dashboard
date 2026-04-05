@@ -57,11 +57,8 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 ## Project Structure
 
 fd-ui/
-│
 
 ├── public/
-
-│
 
 ├── src/
 
@@ -73,8 +70,6 @@ fd-ui/
 
 │   │   │   └── SummaryCard.jsx
 
-│   │   │
-
 │   │   ├── charts/
 
 │   │   │   ├── DailyExpenseChart.jsx
@@ -82,8 +77,6 @@ fd-ui/
 │   │   │   ├── LineChart.jsx
 
 │   │   │   └── PieChart.jsx
-
-│   │   │
 
 │   │   ├── common/
 
@@ -95,15 +88,11 @@ fd-ui/
 
 │   │   │   └── Select.jsx
 
-│   │   │
-
 │   ├── constants/
 
 │   │   ├── categories.js
 
 │   │   └── roles.js
-
-│   │
 
 │   ├── context/
 
@@ -111,13 +100,9 @@ fd-ui/
 
 │   │   └── AppProvider.jsx
 
-│   │
-
 │   ├── hooks/
 
 │   │   └── useTransactions.jsx
-
-│   │
 
 │   ├── pages/
 
@@ -133,15 +118,11 @@ fd-ui/
 
 │   │   └── TransactionTable.jsx
 
-│   │
-
 │   ├── utils/
 
 │   │   ├── calculations.js
 
 │   │   └── format.jsx
-
-│   │
 
 │   ├── App.jsx
 
@@ -150,8 +131,6 @@ fd-ui/
 │   ├── index.css
 
 │   └── main.jsx
-
-│
 
 ├── .env
 
