@@ -57,7 +57,6 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 ## Project Structure
 
 fd-ui/
-
 │
 
 ├── public/
