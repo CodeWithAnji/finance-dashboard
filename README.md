@@ -84,6 +84,6 @@ Transaction section -  role: admin
 Insights section
 ![insight](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/insights.png)
 ### Additional Notes
-Fully responsive UI for all devices
-Handles empty states gracefully
-Works with mock/static data; no backend required
+- Fully responsive UI for all devices
+- Handles empty states gracefully
+- Works with mock/static data; no backend required
