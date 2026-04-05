@@ -62,49 +62,49 @@ finance-dashboard/
 ├── public/
 │
 ├── src/
-│   ├── components/
-│   │   ├── cards/
-│   │   │   ├── StatCard.jsx
-│   │   │   └── SummaryCard.jsx
-│   │   │
-│   │   ├── charts/
-│   │   │   ├── DailyExpenseChart.jsx
-│   │   │   ├── LineChart.jsx
-│   │   │   └── PieChart.jsx
-│   │   │
-│   │   ├── common/
-│   │   │   ├── Button.jsx
-│   │   │   ├── Input.jsx
-│   │   │   ├── Loader.jsx
-│   │   │   └── Select.jsx
-│   │
-│   ├── constants/
-│   │   ├── categories.js
-│   │   └── roles.js
-│   │
-│   ├── context/
-│   │   ├── AppContext.jsx
-│   │   └── AppProvider.jsx
-│   │
-│   ├── hooks/
-│   │   └── useTransactions.jsx
-│   │
-│   ├── pages/
-│   │   ├── Dashboard.jsx
-│   │   ├── Insights.jsx
-│   │   ├── Navbar.jsx
-│   │   ├── TransactionForm.jsx
-│   │   ├── Transactions.jsx
-│   │   └── TransactionTable.jsx
-│   │
-│   ├── utils/
-│   │   ├── calculations.js
-│   │   └── format.jsx
-│   │
-│   ├── App.jsx
-│   ├── App.css
-│   ├── index.css
-│   └── main.jsx
+│ ├── components/
+│ │ ├── cards/
+│ │ │ ├── StatCard.jsx
+│ │ │ └── SummaryCard.jsx
+│ │ │
+│ │ ├── charts/
+│ │ │ ├── DailyExpenseChart.jsx
+│ │ │ ├── LineChart.jsx
+│ │ │ └── PieChart.jsx
+│ │ │
+│ │ ├── common/
+│ │ │ ├── Button.jsx
+│ │ │ ├── Input.jsx
+│ │ │ ├── Loader.jsx
+│ │ │ └── Select.jsx
+│ │
+│ ├── constants/
+│ │ ├── categories.js
+│ │ └── roles.js
+│ │
+│ ├── context/
+│ │ ├── AppContext.jsx
+│ │ └── AppProvider.jsx
+│ │
+│ ├── hooks/
+│ │ └── useTransactions.jsx
+│ │
+│ ├── pages/
+│ │ ├── Dashboard.jsx
+│ │ ├── Insights.jsx
+│ │ ├── Navbar.jsx
+│ │ ├── TransactionForm.jsx
+│ │ ├── Transactions.jsx
+│ │ └── TransactionTable.jsx
+│ │
+│ ├── utils/
+│ │ ├── calculations.js
+│ │ └── format.jsx
+│ │
+│ ├── App.jsx
+│ ├── App.css
+│ ├── index.css
+│ └── main.jsx
 │
 ├── .env
 ├── .gitignore
@@ -112,6 +112,7 @@ finance-dashboard/
 ├── index.html
 ├── package.json
 └── README.md
+
 
 ### Setup Instructions
 
