@@ -1,6 +1,6 @@
 # Finance Dashboard UI
 
-🔗 Live Demo: https://your-deployed-link.vercel.app  
+🔗 Live Demo: https://finance-dashboard-yn1p.vercel.app/
 📂 Repository: https://github.com/CodeWithAnji/finance-dashboard
 
 ## Overview
@@ -56,6 +56,62 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 - **Deploy:** Vercel
 
 ## Project Structure
+
+finance-dashboard/
+│
+├── public/
+│
+├── src/
+│   ├── components/
+│   │   ├── cards/
+│   │   │   ├── StatCard.jsx
+│   │   │   └── SummaryCard.jsx
+│   │   │
+│   │   ├── charts/
+│   │   │   ├── DailyExpenseChart.jsx
+│   │   │   ├── LineChart.jsx
+│   │   │   └── PieChart.jsx
+│   │   │
+│   │   ├── common/
+│   │   │   ├── Button.jsx
+│   │   │   ├── Input.jsx
+│   │   │   ├── Loader.jsx
+│   │   │   └── Select.jsx
+│   │
+│   ├── constants/
+│   │   ├── categories.js
+│   │   └── roles.js
+│   │
+│   ├── context/
+│   │   ├── AppContext.jsx
+│   │   └── AppProvider.jsx
+│   │
+│   ├── hooks/
+│   │   └── useTransactions.jsx
+│   │
+│   ├── pages/
+│   │   ├── Dashboard.jsx
+│   │   ├── Insights.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── TransactionForm.jsx
+│   │   ├── Transactions.jsx
+│   │   └── TransactionTable.jsx
+│   │
+│   ├── utils/
+│   │   ├── calculations.js
+│   │   └── format.jsx
+│   │
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   └── main.jsx
+│
+├── .env
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package.json
+└── README.md
 
 ### Setup Instructions
 
@@ -115,3 +171,10 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 - Fully responsive UI for all devices
 - Handles empty states gracefully
 - Works with mock/static data; no backend required
+
+## Author
+
+Anjaneyulu Ganta  
+Frontend Developer Intern Candidate  
+📧 gantaanjaneyulu66@gmail.com  
+🔗 GitHub: https://github.com/CodeWithAnji
