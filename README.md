@@ -54,14 +54,23 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 ### Setup Instructions
 
 1. Clone the repository:
+   
    git clone https://github.com/CodeWithAnji/finance-dashboard.git
+   
    cd fd-ui
+   
 2. Install dependencies:
+   
    npm install
+   
 3. Start the development server:
+   
    npm start
+   
 4. Open in browser:
+   
    http://localhost:5173/
+   
 ### How to Use
 - Switch Role: Toggle between Admin and Viewer
 - Manage Transactions: Add, edit, delete (Admin only)
@@ -85,11 +94,11 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 ![dashboard](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/dashboard.png)
 
 - Transactions section - role: user
-- 
+  
 ![user](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/transaction-user.png)
 
 - Transaction section -  role: admin
-- 
+  
 ![admin](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/transaction-admin.png)
 
 Insights section
