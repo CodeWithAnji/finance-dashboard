@@ -47,6 +47,7 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 - **Notifications:** react-toastify  
 - **Charts:** Recharts  
 - **Data:** Mock API for CRUD operations
+- **State Management:** Context API 
 
 ## Project Structure
 
@@ -74,16 +75,27 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 - Animations & Transitions: Button hover effects and toast notifications
 - Export Functionality: CSV export of filtered transactions
 - Advanced Filtering & Grouping: Filters by type, category, amount, and date; sorting by date and amount
+- Handles empty transactions gracefully
+- Prevents invalid or missing data entries
+- Safe calculations for division and percentages
+
 ### Screenshots
 - Dashboard Overview
 
 ![dashboard](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/dashboard.png)
+
 - Transactions section - role: user
+- 
 ![user](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/transaction-user.png)
+
 - Transaction section -  role: admin
+- 
 ![admin](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/transaction-admin.png)
+
 Insights section
+
 ![insight](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/insights.png)
+
 ### Additional Notes
 - Fully responsive UI for all devices
 - Handles empty states gracefully
