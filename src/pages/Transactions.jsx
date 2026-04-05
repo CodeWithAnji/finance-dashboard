@@ -1,6 +1,10 @@
-import { useContext, useState, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { AppContext } from "../context/AppContext";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import TransactionForm from "./TransactionForm";
+import TransactionTable from "./TransactionTable";
+import { FiDownload } from "react-icons/fi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Transactions() {
   const {
@@ -12,39 +16,27 @@ export default function Transactions() {
     updateTransaction,
     deleteTransaction,
   } = useContext(AppContext);
-
-  const [form, setForm] = useState({
-    amount: "",
-    type: "income",
-    category: "",
-    date: "",
-  });
-
-  const [editId, setEditId] = useState(null);
+  const [editData, setEditData] = useState(null);
   const [filterType, setFilterType] = useState("all");
   const [sortBy, setSortBy] = useState("date");
 
   const categories = ["Food", "Travel", "Shopping", "Salary", "Bills", "Other"];
 
-  // 🔥 FILTER + SEARCH + SORT with edge-case handling
+  // 🔥 FILTER + SEARCH + SORT
+  // 🔥 FILTER + SEARCH + SORT (Enhanced)
   const filtered = useMemo(() => {
-    if (!transactions || transactions.length === 0) return [];
-
-    let data = [...transactions].filter(
-      (t) =>
-        t.amount !== null &&
-        !isNaN(Number(t.amount)) &&
-        t.category &&
-        t.type &&
-        t.date,
-    );
+    let data = [...transactions];
 
     if (search) {
-      data = data.filter(
-        (t) =>
-          t.category.toLowerCase().includes(search.toLowerCase()) ||
-          t.type.toLowerCase().includes(search.toLowerCase()),
-      );
+      const lowerSearch = search.toLowerCase();
+      data = data.filter((t) => {
+        return (
+          t.category.toLowerCase().includes(lowerSearch) || // category match
+          t.type.toLowerCase().includes(lowerSearch) || // type match
+          t.date.includes(search) || // date match (YYYY-MM-DD)
+          t.amount.toString().includes(search) // amount match
+        );
+      });
     }
 
     if (filterType !== "all") {
@@ -59,45 +51,57 @@ export default function Transactions() {
 
     return data;
   }, [transactions, search, filterType, sortBy]);
-
-  const handleSubmit = async () => {
-    if (!form.amount || !form.category || !form.date) return;
-
-    const numericAmount = Number(form.amount);
-    if (isNaN(numericAmount)) return;
-
-    if (editId) {
-      await updateTransaction(editId, { ...form, amount: numericAmount });
+  const handleAddUpdate = async (t) => {
+    if (editData) {
+      await updateTransaction(editData.id, t);
+      toast.success("Transaction updated!");
+      setEditData(null);
     } else {
-      await addTransaction({ ...form, amount: numericAmount });
+      await addTransaction(t);
+      toast.success("Transaction added!");
     }
-
-    setForm({ amount: "", type: "income", category: "", date: "" });
-    setEditId(null);
   };
 
   const handleDelete = async (id) => {
     await deleteTransaction(id);
   };
 
-  const handleEdit = (t) => {
-    setForm({
-      amount: t.amount,
-      type: t.type,
-      category: t.category,
-      date: t.date,
-    });
-    setEditId(t.id);
+  const handleEdit = (t) => setEditData(t);
+
+  const handleExport = () => {
+    if (!filtered.length) return toast.warn("No transactions to export!");
+    const headers = ["Date", "Category", "Type", "Amount"];
+    const csvRows = [
+      headers.join(","),
+      ...filtered.map((t) => [t.date, t.category, t.type, t.amount].join(",")),
+    ];
+    const csvData = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(csvData);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "transactions.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Transactions exported!");
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white p-3 sm:p-4 lg:p-6">
-      {/* Header */}
-      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-300 mb-4">
-        Transactions
-      </h2>
+    <div className="min-h-screen bg-[#0f172a] text-white p-4">
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
 
-      {/* SEARCH + FILTER */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+        <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-300">
+          Transactions
+        </h2>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-1 bg-green-500 hover:bg-green-600 rounded-lg text-xs sm:text-sm px-3 py-2"
+        >
+          <FiDownload className="text-white" />
+          Export
+        </button>
+      </div>
+
       <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 mb-4">
         <input
           placeholder="Search category or type..."
@@ -105,7 +109,6 @@ export default function Transactions() {
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 min-w-[150px] p-2 rounded-lg bg-[#1e293b] border border-gray-700 text-xs sm:text-sm"
         />
-
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
@@ -115,7 +118,6 @@ export default function Transactions() {
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
-
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
@@ -126,143 +128,18 @@ export default function Transactions() {
         </select>
       </div>
 
-      {/* FORM (Admin Only) */}
       {role === "admin" && (
-        <div className="bg-[#1e293b] border border-gray-700 rounded-xl p-3 sm:p-4 mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-          <input
-            placeholder="Amount"
-            value={form.amount}
-            onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
-          />
-
-          <select
-            value={form.category}
-            onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
-          >
-            <option value="">Category</option>
-            {categories.map((c, i) => (
-              <option key={i} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={form.type}
-            onChange={(e) => setForm({ ...form, type: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
-          >
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-
-          <input
-            type="date"
-            value={form.date}
-            onChange={(e) => setForm({ ...form, date: e.target.value })}
-            className="p-2 rounded-lg bg-[#0f172a] border border-gray-700 text-xs sm:text-sm"
-          />
-
-          <button
-            onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 rounded-lg text-xs sm:text-sm px-3 py-2"
-          >
-            {editId ? "Update" : "Add"}
-          </button>
-        </div>
+        <TransactionForm
+          categories={categories}
+          onSubmit={handleAddUpdate}
+          editData={editData}
+        />
       )}
-
-      {/* TABLE (Desktop/Tablet) */}
-      {filtered.length > 0 ? (
-        <div className="hidden md:block bg-[#1e293b] border border-gray-700 rounded-xl overflow-x-auto">
-          <table className="w-full text-xs sm:text-sm min-w-[600px]">
-            <thead className="bg-[#0f172a] text-gray-400">
-              <tr>
-                <th className="p-3 text-left">Date</th>
-                <th className="p-3 text-left">Category</th>
-                <th className="p-3 text-left">Amount</th>
-                <th className="p-3 text-left">Type</th>
-                <th className="p-3 text-left">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filtered.map((t) => (
-                <tr key={t.id} className="border-t border-gray-700">
-                  <td className="p-3">{t.date}</td>
-                  <td className="p-3">{t.category}</td>
-                  <td
-                    className={`p-3 font-semibold ${
-                      t.type === "income" ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    ₹{t.amount}
-                  </td>
-                  <td className="p-3 capitalize">{t.type}</td>
-                  <td className="p-3 flex gap-3">
-                    <FaEdit
-                      onClick={() => handleEdit(t)}
-                      className="text-blue-400 cursor-pointer"
-                    />
-                    <FaTrash
-                      onClick={() => handleDelete(t.id)}
-                      className="text-red-400 cursor-pointer"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="text-gray-400 text-center p-4 md:p-6">
-          No transactions found.
-        </div>
-      )}
-
-      {/* MOBILE CARDS */}
-      <div className="md:hidden flex flex-col gap-2">
-        {filtered.length > 0 ? (
-          filtered.map((t) => (
-            <div
-              key={t.id}
-              className="bg-[#1e293b] border border-gray-700 rounded-lg p-2"
-            >
-              <div className="flex justify-between items-center text-xs text-gray-400">
-                <span>{t.date}</span>
-                <span className="capitalize">{t.type}</span>
-              </div>
-
-              <h3 className="text-sm font-medium mt-1">{t.category}</h3>
-
-              <p
-                className={`font-bold ${
-                  t.type === "income" ? "text-green-400" : "text-red-400"
-                }`}
-              >
-                ₹{t.amount}
-              </p>
-
-              <div className="flex gap-4 mt-1">
-                <FaEdit
-                  onClick={() => handleEdit(t)}
-                  className="text-blue-400"
-                />
-                <FaTrash
-                  onClick={() => handleDelete(t.id)}
-                  className="text-red-400"
-                />
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-gray-400 text-center p-4">
-            No transactions found.
-          </div>
-        )}
-      </div>
+      <TransactionTable
+        data={filtered}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
