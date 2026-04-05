@@ -6,8 +6,6 @@
 
 ## Overview
 
-## Overview
-
 This project is a **Finance Dashboard UI** built using **React** and **TailwindCSS**.  
 It allows users to **track financial activity**, view insights, and manage transactions in a clean and interactive interface.  
 
