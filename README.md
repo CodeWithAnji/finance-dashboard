@@ -1,5 +1,10 @@
 # Finance Dashboard UI
 
+🔗 Live Demo: https://your-deployed-link.vercel.app  
+📂 Repository: https://github.com/CodeWithAnji/finance-dashboard
+
+## Overview
+
 ## Overview
 
 This project is a **Finance Dashboard UI** built using **React** and **TailwindCSS**.  
@@ -47,7 +52,8 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
 - **Notifications:** react-toastify  
 - **Charts:** Recharts  
 - **Data:** Mock API for CRUD operations
-- **State Management:** Context API 
+- **State Management:** Context API
+- **Deploy:** Vercel
 
 ## Project Structure
 
@@ -101,7 +107,7 @@ The dashboard demonstrates **state management, responsive design, role-based UI*
   
 ![admin](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/transaction-admin.png)
 
-Insights section
+- Insights section
 
 ![insight](https://github.com/CodeWithAnji/finance-dashboard/blob/d4c39b844261061e056f1f305e23b7bf4cf10b68/src/screenshots/insights.png)
 
