@@ -119,29 +119,53 @@ fd-ui/
 │   │   └── useTransactions.jsx
 
 │   │
+
 │   ├── pages/
+
 │   │   ├── Dashboard.jsx
+
 │   │   ├── Insights.jsx
+
 │   │   ├── Navbar.jsx
+
 │   │   ├── TransactionForm.jsx
+
 │   │   ├── Transactions.jsx
+
 │   │   └── TransactionTable.jsx
+
 │   │
+
 │   ├── utils/
+
 │   │   ├── calculations.js
+
 │   │   └── format.jsx
+
 │   │
+
 │   ├── App.jsx
+
 │   ├── App.css
+
 │   ├── index.css
+
 │   └── main.jsx
+
 │
+
 ├── .env
+
 ├── .gitignore
+
 ├── eslint.config.js
+
 ├── index.html
+
 ├── package.json
+
 └── README.md
+
 ### Setup Instructions
 
 1. Clone the repository:
